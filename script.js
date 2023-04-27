@@ -8,7 +8,7 @@ function placeElementos(elementos) {
     respuestas.innerHTML = "";
     elementos.data.products.forEach((element, index) => {
         let nuevaRow = document.createElement('tr');
-        nuevaRow.innerHTML = `<th scope="row">${index+1}</th>\n<td><img class="w-25 h-25" src=${element.thumbnail}></td>\n<td>${element.title}</td>\n<td>${element.rating}</td>\n<td>${element.price}</td>`;
+        nuevaRow.innerHTML = `<th scope="row">${index+1}</th>\n<td><img class="w-25 h-25" src=${element.thumbnail}></td>\n<td>${element.title}</td>\n<td>${element.rating}</td>\n<td>${element.price}</td>\n<td><button type="button" class="btn btn-info">Ver Mas Info</button></td>`;
         respuestas.appendChild(nuevaRow);
     });
 }
@@ -32,12 +32,20 @@ inputName.onkeyup = (nombre) => {
 }
 
 function cargarCategorias() {
-    axios.get('https://dummyjson.com/products/categories').then((response) => {
-        response.forEach((element) => {
-            let newCategory = document.createElement('a');
-            newCategory.classList.add('dropdown-item');
-            newCategory.innerText = element;
-            categorias.appendChild(newCategory);
-        });
-    })
+    axios.get('https://dummyjson.com/products/categories')
+        .then((response) => {   
+            response.data.forEach((element) => {
+                let newCategory = document.createElement('a');
+                newCategory.classList.add('dropdown-item');
+                newCategory.innerText = element;
+                categorias.appendChild(newCategory);
+            });
+        })
+}
+
+function filtrarCategoria(){
+    axios.get('https://dummyjson.com/products/category/' + inputName.value)
+        .then((response) => {
+            placeElementos(response);
+        })
 }
