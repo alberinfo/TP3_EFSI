@@ -62,30 +62,27 @@ function cargarModal(id){
         .then((response) => {
             let modalTitle = document.getElementById('modal-title');
             modalTitle.innerText = response.data.title;
-            let modalBody = document.getElementById('modal-body');
-            modalBody.innerHTML = `
-            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                    <img class="d-block w-100" src="${response.data.thumbnail}" alt="First slide">
-                    </div>
-                    <div class="carousel-item">
-                    <img class="d-block w-100" src="${response.value.images[1]}" alt="Second slide">
-                    </div>
-                    <div class="carousel-item">
-                    <img class="d-block w-100" src="..." alt="Third slide">
-                    </div>
-                </div>
-                <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a>
-            </div>
-            `
-            $("#modalInfo").show(); 
+            
+            const caraouselImg = document.getElementById('carousel-inner');
+            caraouselImg.innerHTML = "";
+            let firstPassed = false;
+            response.data.images.forEach(element => {
+                console.log(caraouselImg);
+                let nuevohtml;
+                if(firstPassed === false) nuevohtml = "<div class='carousel-item active'><img class='d-block w-100' src='reemplazame' alt='Second slide'></div>"; 
+                else nuevohtml = "<div class='carousel-item'><img class='d-block w-100' src='reemplazame' alt='Second slide'></div>";
+                firstPassed = true;
+                caraouselImg.innerHTML += nuevohtml.replace("reemplazame", element);
+            })
+
+            let modalCuerpo = document.getElementById('modal-cuerpo');
+            modalCuerpo.innerHTML = `<p>${response.data.description}</p>
+            <p>Precio: ${response.data.price} con ${response.data.discountPercentage}% de descuento</p>
+            <p>Stock: ${response.data.stock}</p>
+            <p>Marca: ${response.data.brand}</p>        
+            <p>Rating: ${response.data.rating}</p>
+            <p>Categoria: ${response.data.category}</p>`;
+
+            $("#modalInfo").modal('show'); 
         })
 }
