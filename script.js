@@ -3,6 +3,11 @@ const respuestas = document.getElementsByTagName('tbody')[0]; //tenemos un solo 
 const inputName = document.getElementById('filtroNombre');
 const categorias = document.getElementById('categorias');
 
+document.body.onload = () => {
+    cargarElementos();
+    cargarCategorias();
+}
+
 // Insertar elementos en el html
 function placeElementos(elementos) {
     respuestas.innerHTML = "";
@@ -18,7 +23,6 @@ function cargarElementos(){
         .then((response) => {
             placeElementos(response);
         });
-    cargarCategorias();
 }
 
 // Make a request for a user with a given ID
@@ -32,19 +36,26 @@ inputName.onkeyup = (nombre) => {
 }
 
 function cargarCategorias() {
+    let firstElement = document.createElement('a'); //remover filtro
+    firstElement.classList.add('dropdown-item'); firstElement.innerText = "Remover filtro de categorias";
+    firstElement.onclick = cargarElementos;
+    categorias.appendChild(firstElement);
     axios.get('https://dummyjson.com/products/categories')
         .then((response) => {   
             response.data.forEach((element) => {
                 let newCategory = document.createElement('a');
                 newCategory.classList.add('dropdown-item');
                 newCategory.innerText = element;
+                newCategory.onclick = () => {
+                    filtrarCategoria(element);
+                }
                 categorias.appendChild(newCategory);
             });
         })
 }
 
-function filtrarCategoria(){
-    axios.get('https://dummyjson.com/products/category/' + inputName.value)
+function filtrarCategoria(val){
+    axios.get('https://dummyjson.com/products/category/' + val)
         .then((response) => {
             placeElementos(response);
         })
