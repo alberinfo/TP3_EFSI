@@ -41,17 +41,27 @@ inputName.onkeyup = (nombre) => {
 function cargarCategorias() {
     axios.get('https://dummyjson.com/products/categories')
         .then((response) => {   
+            let newCategory = document.createElement('a');
+            newCategory.classList.add('dropdown-item');
+            newCategory.innerText = "Eliminar filtros";
+            newCategory.onclick = () => {cargarElementos()};
+            categorias.appendChild(newCategory);
+
             response.data.forEach((element) => {
+                //Reutilizamos la misma variable, total...
                 let newCategory = document.createElement('a');
                 newCategory.classList.add('dropdown-item');
                 newCategory.innerText = element;
+                newCategory.onclick = () => {
+                    filtrarCategoria(newCategory.innerText);
+                };
                 categorias.appendChild(newCategory);
             });
         })
 }
 
-function filtrarCategoria(){
-    axios.get('https://dummyjson.com/products/category/' + inputName.value)
+function filtrarCategoria(categoria){
+    axios.get('https://dummyjson.com/products/category/' + categoria)
         .then((response) => {
             placeElementos(response);
         })
@@ -67,7 +77,6 @@ function cargarModal(id){
             caraouselImg.innerHTML = "";
             let firstPassed = false;
             response.data.images.forEach(element => {
-                console.log(caraouselImg);
                 let nuevohtml;
                 if(firstPassed === false) nuevohtml = "<div class='carousel-item active'><img class='d-block w-100' src='reemplazame' alt='Second slide'></div>"; 
                 else nuevohtml = "<div class='carousel-item'><img class='d-block w-100' src='reemplazame' alt='Second slide'></div>";
@@ -77,10 +86,10 @@ function cargarModal(id){
 
             let modalCuerpo = document.getElementById('modal-cuerpo');
             modalCuerpo.innerHTML = `<p>${response.data.description}</p>
-            <p>Precio: ${response.data.price} con ${response.data.discountPercentage}% de descuento</p>
+            <p>Precio: ${response.data.price}USD con ${response.data.discountPercentage}% de descuento</p>
             <p>Stock: ${response.data.stock}</p>
             <p>Marca: ${response.data.brand}</p>        
-            <p>Rating: ${response.data.rating}</p>
+            <p>Rating: ${response.data.rating}/5</p>
             <p>Categoria: ${response.data.category}</p>`;
 
             $("#modalInfo").modal('show'); 
